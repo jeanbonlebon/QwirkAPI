@@ -2,6 +2,7 @@ var express = require('express'),
     router = express.Router();
 
 var Friend = require('../models/friends');
+var User = require('../models/users');
 
 
 router.get('/', function(req, res, next) {
@@ -21,6 +22,26 @@ router.post('/', function(req, res) {
     friend.friend_one_username = req.body.friend_one_username;
     friend.friend_two_username = req.body.friend_two_username;
     friend.blocked = req.body.blocked;
+
+
+    console.log('//////////1/////////////');
+    User.findById(req.body.friend_one, function(err, user) {
+      if (err)
+          res.send(err);
+
+          console.log('//////////2/////////////');
+          var friend2 = {"_id":"591ab7c142617b149092e44e","avatar":"img1.png","password":"test","username":"Robin","__v":0}
+          user.friends.push(friend2);
+
+          user.save(function(err) {
+              if (err)
+                  res.send(err);
+                  console.log('//////////3/////////////');
+              res.json({ message: 'User 1 add user 2 in his array!' });
+          });
+      console.log('//////////4/////////////');
+
+    });
 
     friend.save(function(err) {
         if (err)

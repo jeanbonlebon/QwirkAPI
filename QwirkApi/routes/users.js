@@ -1,7 +1,9 @@
 var express = require('express'),
     router = express.Router();
 
+var Friend = require('../models/friends');
 var User = require('../models/users');
+
 
 
 router.get('/', function(req, res, next) {
@@ -12,6 +14,7 @@ router.get('/', function(req, res, next) {
       res.json(users);
     });
 });
+
 
 router.post('/', function(req, res) {
 
@@ -26,17 +29,19 @@ router.post('/', function(req, res) {
 
         res.json({ message: 'User created!' });
     });
-
 });
 
 router.get('/:user_id', function(req,res) {
 
-      User.findById(req.params.user_id, function(err, user) {
+    User.findById(req.params.user_id)
+        .populate({ path: 'users' , model: 'User'})
+        .exec(function(err, user) {
+
         if (err)
             res.send(err);
+
         res.json(user);
     });
-
 });
 
 router.put('/:user_id', function(req, res) {
